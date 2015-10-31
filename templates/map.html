@@ -65,10 +65,36 @@
 
 <div style="margin-left: 1em;">
 <input id="search-box" class="form-control" type="text" autocomplete="off" placeholder="Enter a location" style="width: 25em;">
-<button type="button" class="btn btn-primary" style="margin-top: 0.5em; margin-bottom: 0.5em;">Go</button>
+<select id="radius-select" class="form-control" style="width: 10em;">
+	<option value="5">5 miles</option>
+	<option value="10">10 miles</option>
+	<option value="25" selected>25 miles</option>
+	<option value="50">50 miles</option>
+	<option value="100">100 miles</option>
+</select>
+
+<table class="table table-striped" style="width:200px">
+<tr>
+    <th><b>Score</th>
+    <th><b>Legend</th>
+</tr>
+  <tr>
+    <td><60</td>
+    <td><img src="http://maps.google.com/mapfiles/ms/icons/red-dot.png"></td>   
+  </tr>
+  <tr>
+    <td><80</td>
+    <td><img src="http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"></td>   
+  </tr>
+  <tr>
+    <td>>=80</td>
+    <td><img src="http://maps.google.com/mapfiles/ms/icons/green-dot.png"></td>   
+  </tr>
+</table>
+
 </div>
 
-<div id="map" style="width: 100%; height: 24em;"></div>
+<div id="map" style="margin: 0 auto; width: 90%; height: 24em;"></div>
 
 
     <hr>
