@@ -35,10 +35,15 @@ for x in _temp:
 
 
 pids = client.medrank.hospital.distinct('provider id')
+client.medrank.hospital_rank.drop()
 i = 0
+scores = []
 for pid in pids:
 	pd = {}
 	for x in client.medrank.hospital.find({'provider id': pid}):
+		for y in ('hospital name', 'location', 'geo', 'phone number'):
+			if not pd.get(y):
+				pd[y] = x.get(y)
 		if math.isnan(x['score']):
 			pd[x['measure id']] = MONGO_STATS[x['measure id']]['avg']
 		else:
@@ -54,6 +59,14 @@ for pid in pids:
 	percent_seen = (pd['OP_22'] - MONGO_STATS['OP_22']['min']) * 10000 / (100 * (MONGO_STATS['OP_22']['max'] - MONGO_STATS['OP_22']['min']))
 	complications = (pd['PSI_90_SAFETY'] - MONGO_STATS['PSI_90_SAFETY']['min']) * 10000 / (100 * (MONGO_STATS['PSI_90_SAFETY']['max'] - MONGO_STATS['PSI_90_SAFETY']['min']))
 	score = 0.25 * survival + 0.25 * non_readmit + 0.15 * spp + 0.15 * complications + 0.1 * percent_seen + 0.1 * pt_satisfaction 
-	print 2 * score
+	score = 2 * score
+	pd['score'] = score
+	scores.append(score)
+	client.medrank.hospital_rank.insert(pd)
 	i += 1
+
+scores.sort(reverse=True)
+for x in client.medrank.hospital_rank.find():
+	x['rank'] = scores.index(x['score']) + 1
+	client.medrank.hospital_rank.replace_one({'_id': x['_id']}, x)
 print i	
