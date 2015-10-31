@@ -33,5 +33,13 @@ def nearby():
 def about():
 	return render_template('about_us.html')
 
+@app.route('/map')
+def medrank_map():
+	return render_template('map.html')
+
+@app.route('/references')
+def references():
+	return render_template('references.html')
+
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=9080, debug=True)
