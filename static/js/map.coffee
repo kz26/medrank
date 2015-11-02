@@ -1,14 +1,33 @@
 markers = []
 place_cache = null
 
+isExactLocation = (place) ->
+	addr_types = [
+		'street_address'
+		'intersection'
+		'premise'
+		'subpremise'
+		'natural_feature'
+		'airport'
+		'park'
+		'point_of_interest'
+	]
+	return addr_types.some (c, i, a) ->
+		return place.types.indexOf(c) != -1
+
 initMap = ->
 	map = new google.maps.Map $('#map')[0], {
-		center: {lat: 41.618460, lng: -83.617682},
-		zoom: 8
+		center: {lat: 41.618460, lng: -83.617682}
+		zoom: 10
+		componentRestrictions: {country: 'us'}
 	}
 	autocomplete = new google.maps.places.Autocomplete $('#search-box')[0]
 	autocomplete.addListener 'place_changed', ->
 		p = autocomplete.getPlace()
+		if isExactLocation(p)
+			map.setZoom 14
+		else
+			map.setZoom 10
 		plotNearby p
 		place_cache = p
 
@@ -40,7 +59,7 @@ initMap = ->
 							<li>Score: #{ +x.score.toFixed(2) }</li>
 							<li>Rank: #{ x.rank } / 4300</li>
 							<li>#{ la.address }, #{ la.city }, #{ la.state } #{ la.zip }</li>
-							<li><a href=\"tel:#{ x['phone number'][0] }\">#{ x['phone number'][0] }</a></li>
+							<li>Phone: <a href=\"tel:#{ x['phone number'][0] }\">#{ x['phone number'][0] }</a></li>
 						</ul>
 				"
 				markers.push marker
